@@ -12,11 +12,6 @@ circular_i = 0
 max_i = 1
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-
 @app.route('/set-n-servers/<amount>', methods=['GET'])
 def set_n_servers(amount):
     global max_i
@@ -26,15 +21,16 @@ def set_n_servers(amount):
     return '', 200
 
 
-@app.route('/fitness', methods=['POST', 'GET'])
-def fitness():
+@app.route('/<path:url>', methods=['PUT', 'POST', 'GET', 'DELETE'])
+def proxy_passthrough_endpoint():
     global circular_i, max_i, server_list
 
     target_url = server_list[circular_i]
     circular_i = (circular_i + 1) % max_i
 
-    response = requests.get(target_url, headers=request.headers, data=request.data)
-    return response.content, response.status_code
+    data = request.get_data()
+    resp = send_request_to_vault(data, request.url)
+    return (resp.content, resp.status_code, resp.headers.items())
 
 
 if __name__ == '__main__':
