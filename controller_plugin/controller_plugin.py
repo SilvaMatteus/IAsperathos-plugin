@@ -2,6 +2,8 @@ import requests
 from math import log10
 import json
 
+monitor_endpoint = "fitness"
+
 class IAsperathosController(object):
     
     def __init__(self, time_limit):
@@ -16,8 +18,8 @@ class IAsperathosController(object):
     def __get_fitness(self,url):
         try:
             r = requests.get(url)
-            progress = json.loads(r.json)
-            return float(progress["real_progress"])
+            json_data = json.loads(r.json)
+            return float(json_data[monitor_endpoint])
         except:
             return None
 
