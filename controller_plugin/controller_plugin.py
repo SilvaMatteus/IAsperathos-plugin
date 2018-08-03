@@ -22,8 +22,7 @@ class IAsperathosController(object):
             return None
 
     def evaluate_efficiency(self, url, fitness_limit,time_spent): 
-        real_fitness = 0.2
-        #real_fitness = self.__get_fitness(url)
+        real_fitness = self.__get_fitness(url)
         if not real_fitness:
             return None
         fitness_percentage = self.__get_fitness_percentage(real_fitness, fitness_limit)
