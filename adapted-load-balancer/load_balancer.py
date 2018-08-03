@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__)
 
-server_list = ['http://localhost:6002',
+server_list = ['http://localhost:6001',
                'http://localhost:6002',
                'http://localhost:6003',
                'http://localhost:6004',]
@@ -16,7 +16,7 @@ max_i = 1
 def set_n_servers(amount):
     global max_i
     if not 0 < int(amount) < 5:
-        return '', 403
+        return '', 422
     max_i = int(amount)
     return '', 200
 
