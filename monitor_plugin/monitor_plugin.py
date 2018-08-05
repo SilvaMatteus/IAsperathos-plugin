@@ -25,7 +25,7 @@ class IAsperathosMonitor(object):
         ssh.connect(self.__app_address, self.__app_username, password=self.__app_pass)
         ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(read_fitness_log)
         ssh_stdin.close()
-        last_fit = 5
+        last_fit = float(ssh_stdout.read())
 
 
 class Server(Thread):
