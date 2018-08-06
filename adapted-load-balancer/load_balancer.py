@@ -11,7 +11,7 @@ server_list = ['http://localhost:6001/',
 circular_i = 0
 max_i = 1
 
-
+'''
 @app.route('/set-n-servers/<amount>', methods=['GET'])
 def set_n_servers(amount):
     global max_i
@@ -19,7 +19,21 @@ def set_n_servers(amount):
         return '', 422
     max_i = int(amount)
     return '', 200
+'''
 
+@app.route("/up",methods=['POST'])
+def scale_up():
+    global max_i
+    content = request.json
+    max_i = min(4, max_i + content['vm_number'])
+    return "",200
+
+@app.route("/down",methods=['POST'])
+def scale_down():
+    global max_i
+    content = request.json
+    max_i = max(1, max_i - content['vm_number'])
+    return "",200
 
 @app.route('/<path:url>', methods=['PUT', 'POST', 'GET', 'DELETE'])
 def proxy_passthrough_endpoint(url):
@@ -34,4 +48,4 @@ def proxy_passthrough_endpoint(url):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost')
+    app.run(host='localhost',port=5005)
