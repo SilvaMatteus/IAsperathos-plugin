@@ -9,7 +9,7 @@ server_list = ['http://localhost:6001/',
                'http://localhost:6004/',]
 
 circular_i = 0
-max_i = 1
+max_i = 2
 
 '''
 @app.route('/set-n-servers/<amount>', methods=['GET'])
@@ -48,4 +48,4 @@ def proxy_passthrough_endpoint(url):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost',port=5005)
+    app.run(host='0.0.0.0',port=5005)
