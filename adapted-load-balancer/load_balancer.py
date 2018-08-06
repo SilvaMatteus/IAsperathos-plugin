@@ -35,6 +35,15 @@ def scale_down():
     max_i = max(1, max_i - content['vm_number'])
     return "",200
 
+@app.route("/set-ip/<string:ip>",methods=['GET'])
+def set_ip(ip):
+    global server_list
+    server_list = ['http://' + ip + ':6001/',
+               'http://' + ip + ':6002/',
+               'http://' + ip + ':6003/',
+               'http://' + ip + ':6004/',]
+    return '', 200
+
 @app.route('/<path:url>', methods=['PUT', 'POST', 'GET', 'DELETE'])
 def proxy_passthrough_endpoint(url):
     global circular_i, max_i, server_list
