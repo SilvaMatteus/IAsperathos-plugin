@@ -3,10 +3,10 @@ import requests
 
 app = Flask(__name__)
 
-server_list = ['http://localhost:6001',
-               'http://localhost:6002',
-               'http://localhost:6003',
-               'http://localhost:6004',]
+server_list = ['http://localhost:6001/',
+               'http://localhost:6002/',
+               'http://localhost:6003/',
+               'http://localhost:6004/',]
 
 circular_i = 0
 max_i = 1
@@ -22,16 +22,16 @@ def set_n_servers(amount):
 
 
 @app.route('/<path:url>', methods=['PUT', 'POST', 'GET', 'DELETE'])
-def proxy_passthrough_endpoint():
+def proxy_passthrough_endpoint(url):
     global circular_i, max_i, server_list
 
     target_url = server_list[circular_i]
     circular_i = (circular_i + 1) % max_i
 
     data = request.get_data()
-    resp = send_request_to_vault(data, request.url)
+    resp = requests.post(target_url + url, data=data)
     return (resp.content, resp.status_code, resp.headers.items())
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='localhost')
