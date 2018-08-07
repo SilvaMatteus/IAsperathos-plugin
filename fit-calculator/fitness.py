@@ -1,11 +1,12 @@
 from PIL import Image, ImageDraw
 from skimage.measure import compare_ssim as ssim
 from numpy import array
-from pickle import load
+from pickle import loads
 from flask import Flask, request
 from os import path
 import genetic.individual
 import json
+from base64 import b64decode
 
 image_path = '/home/ubuntu/image.jpg'
 individual_path = '/home/ubuntu/individual'
@@ -16,7 +17,7 @@ def compare(img1, img2):
     
     return ssim(cv_img1, cv_img2)
 
-def get_fitness():
+def get_fitness(data):
   image = Image.open(image_path)
   image.load()
   image = image.convert('L')
@@ -24,8 +25,7 @@ def get_fitness():
   im = Image.new("L", (image.width, image.height))
   dr = ImageDraw.Draw(im)
   
-  with open(individual_path, 'rb') as individual_file:
-    individual = load(individual_file)
+  individual = loads(b64decode(data["individual"]))
   genome = sorted(individual.genome, key=(lambda g : g.z))
   
   for gene in genome:
@@ -38,14 +38,9 @@ app = Flask(__name__)
 
 @app.route('/calculate-fitness', methods=['POST'])
 def calculate_fitness():
-  uploaded_files = request.files.getlist('file')
-  
-  #We assume that the image file is called 'image.jpg' and the individual file is called 'individual'
-  for f in uploaded_files:
-    f.save(path.join('/home/ubuntu', f.filename))
-  
-  return json.dumps({'fitness': get_fitness()})
+  data = json.loads(request.data)
+  return json.dumps({'fitness': get_fitness(data)})
 
 if __name__ == '__main__':
   import sys
-  app.run(host='0.0.0.0', port=sys.argv[1])
+  app.run(host='0.0.0.0', port=sys.argv[1], debug=True)
